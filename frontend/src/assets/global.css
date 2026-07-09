@@ -1,0 +1,31 @@
+:root {
+  /* Primary Colors */
+  --color-primary-orange: #ff6b00;
+  --color-primary-orange-hover: #e56000;
+  --color-primary-orange-light: #fff0e5;
+
+  /* Neutrals */
+  --color-white: #ffffff;
+  --color-background: #f8f9fa;
+  --color-text-main: #212529;
+  --color-text-muted: #6c757d;
+  --color-border: #e9ecef;
+
+  /* Typography & Layout */
+  --font-family-base: 'Inter', system-ui, sans-serif;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --box-shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+}

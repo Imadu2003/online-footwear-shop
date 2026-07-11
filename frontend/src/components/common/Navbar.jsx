@@ -20,12 +20,18 @@ export default function Navbar() {
           <Link to="/about" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>About</Link>
         </div>
 
-        {/* Cart & Login Icons */}
-        <div className="nav-actions">
-          <Link to="/cart" style={{ textDecoration: 'none', marginRight: '1rem', color: 'var(--color-text-main)' }}>
+               {/* Cart & Login Icons */}
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <Link to="/cart" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontSize: '1.1rem', fontWeight: '500' }}>
             🛒 Cart (0)
           </Link>
-          <button className="btn-primary">Login</button>
+          
+          {/* Customer Login එකට යන්න ලින්ක් එක හැදුවා */}
+          <Link to="/customer-login">
+            <button className="btn-primary" style={{ padding: '0.6rem 1.5rem', borderRadius: '8px', cursor: 'pointer', border: 'none' }}>
+              Login
+            </button>
+          </Link>
         </div>
 
       </div>

@@ -1,5 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+// 1. අලුතින් ගෙනාපු දේවල් ටික Import කරගන්නවා
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/admin/Login';
+import CustomerLogin from './pages/customer/CustomerLogin';
+
 // Layouts 
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -19,26 +25,33 @@ import ManageOrders from './pages/admin/ManageOrders';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Customer Routes */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/shop/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-        </Route>
+     <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Customer Routes */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/shop/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/customer-login" element={<CustomerLogin/>} />
+          </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="products" element={<ManageProducts />} />
-          <Route path="orders" element={<ManageOrders />} />
-        </Route>
-      </Routes>
-    </Router>
+           <Route path="/login" element={<Login />} />
+
+           <Route path="/admin" element={<ProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<ManageProducts />} />
+              <Route path="orders" element={<ManageOrders />} />
+            </Route>
+          </Route>
+
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

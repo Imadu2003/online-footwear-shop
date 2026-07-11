@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import '../../assets/global.css'; 
+import {useCart} from '../../context/CartContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth(); // සිකියුරිටි ගාඩ්ගෙන් විස්තර ගන්නවා
+   const { cartItems } = useCart(); 
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -32,8 +34,9 @@ export default function Navbar() {
         {/* Cart සහ Login/Logout Icons */}
         <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           
-          <Link to="/cart" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontSize: '1.1rem', fontWeight: '500' }}>
-            🛒 Cart (0)
+           <Link to="/cart" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontSize: '1.1rem', fontWeight: '500' }}>
+            {/* Array එකේ දිග (length) අරන් අයිටම් ගාණ සජීවීව පෙන්නනවා */}
+            🛒 Cart ({cartItems.length})
           </Link>
           
           {/* මෙතන තමයි අර Conditional Rendering එක */}

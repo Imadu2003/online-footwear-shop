@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/admin/Login';
 import CustomerLogin from './pages/customer/CustomerLogin';
+import {CartProvider} from './context/CartContext';
 
 // Layouts 
 import MainLayout from './layouts/MainLayout';
@@ -26,6 +27,7 @@ import ManageOrders from './pages/admin/ManageOrders';
 function App() {
   return (
      <AuthProvider>
+      <CartProvider>
       <Router>
         <Routes>
           {/* Customer Routes */}
@@ -51,6 +53,7 @@ function App() {
 
         </Routes>
       </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

@@ -94,8 +94,8 @@ export default function Register() {
             <button type="submit" style={registerBtnStyle}>
               Create My Account
             </button>
-            <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '1rem', fontSize: '0.95rem' }}>
-              Already have an account? <Link to="/login" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>Log In</Link>
+                        <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '1rem', fontSize: '0.95rem' }}>
+              Don't have an account? <Link to="/register" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>Register Here</Link>
             </p>
           </form>
         </div>

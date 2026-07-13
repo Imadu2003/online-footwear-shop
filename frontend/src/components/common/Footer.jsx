@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
       </div>
       {/* Floating WhatsApp Button */}
-      <a href="https://wa.me/94769888977" target="_blank" rel="noreferrer" style={whatsappFloat}>
+      <a href="https://wa.me/xxxxxxxxxx" target="_blank" rel="noreferrer" style={whatsappFloat}>
         💬
       </a>
       

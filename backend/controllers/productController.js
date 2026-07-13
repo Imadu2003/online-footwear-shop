@@ -14,7 +14,31 @@ const getProducts = async (req,res) => {
 };
 
 
-module.exports = {
-    getProducts
+
+const createProduct = async(req,res) =>{
+    try{
+        const { name, price, category, image, description } = req.body;
+
+        const product = new Product({
+            name,
+            price,
+            category,
+            image,
+            description });
+
+
+            const createdProduct = await product.save();
+            res.status(201).json(createdProduct);
+        } catch(error){
+            console.error(error);
+            res.status(500).json({ message: 'Server Error - Could not create product    ' });
+        }
 };
+
+
+module.exports = {
+    getProducts,
+    createProduct
+};
+
 

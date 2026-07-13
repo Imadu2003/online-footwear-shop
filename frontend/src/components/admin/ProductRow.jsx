@@ -10,7 +10,7 @@ export default function ProductRow({ product, onDelete }) {
         </div>
       </td>
       <td>{product.category}</td>
-      <td style={{ fontWeight: '600' }}>Rs. {product.price.toFixed(2)}</td>
+      <td style={{ fontWeight: '600' }}>Rs. {Number(product.price).toFixed(2)}</td>
       <td>
         {product.stock === 0 ? (
           <span className="badge badge-danger">Out of Stock</span>

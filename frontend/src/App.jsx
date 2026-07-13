@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/admin/Login';
 import CustomerLogin from './pages/customer/CustomerLogin';
 import {CartProvider} from './context/CartContext';
+import Register from './pages/customer/Register';
 
 // Layouts 
 import MainLayout from './layouts/MainLayout';
@@ -39,6 +40,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/customer-login" element={<CustomerLogin/>} />
+            <Route path="/register" element={<Register />} />
           </Route>
 
            <Route path="/login" element={<Login />} />

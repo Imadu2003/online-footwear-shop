@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import bgImage from '../../assets/admin-bg.png'; // අර Save කරපු පින්තූරය
+import bgImage from '../../assets/admin-bg.png'; //background image for the login page
+import { Link } from 'react-router-dom';
 
 export default function CustomerLogin() {
   const [email, setEmail] = useState('');
@@ -10,13 +11,13 @@ export default function CustomerLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
 
-    const isSuccess = login(email, password);
-    if (isSuccess) {
-      navigate('/');
+    const result = await login(email, password);
+    if (result.success) {
+      navigate('/');  //if login is successful, navigate to the home page
     } else {
       setError('Invalid email or password');
     }
@@ -36,7 +37,7 @@ export default function CustomerLogin() {
       <div style={formSideStyle}>
         <div style={formContainerStyle}>
           <h2 style={{ fontSize: '2rem', marginBottom: '2rem', color: '#fff' }}>Welcome Back</h2>
-          
+
           {error && (
             <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', textAlign: 'center', border: '1px solid #ef4444' }}>
               {error}
@@ -46,31 +47,37 @@ export default function CustomerLogin() {
           <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div>
               <label style={labelStyle}>Email Address</label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                style={inputStyle} 
+                style={inputStyle}
                 placeholder="isuru@test.com"
-                required 
-              />
-            </div>
-            
-            <div>
-              <label style={labelStyle}>Password</label>
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={inputStyle} 
-                placeholder="123"
-                required 
+                required
               />
             </div>
 
+            <div>
+              <label style={labelStyle}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={inputStyle}
+                placeholder="123"
+                required
+              />
+            </div>
+
+ 
             <button type="submit" style={loginBtnStyle}>
               Sign In to Dashboard
             </button>
+            <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '1rem', fontSize: '0.95rem' }}>
+              Don't have an account? <Link to="/register" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>Register Here</Link>
+            </p>
+
+
           </form>
         </div>
       </div>
@@ -94,7 +101,7 @@ const imageSideStyle = {
   position: 'relative'
 };
 
- const overlayStyle = {
+const overlayStyle = {
   position: 'absolute',
   top: 0, left: 0, right: 0, bottom: 0,
   backgroundColor: 'rgba(0,0,0,0.6)',

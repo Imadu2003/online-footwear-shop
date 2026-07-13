@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
 
   //The actual API for resgistering a new user
-  const register = async (name, email, password) => {
+  const registerUser = async (name, email, password) => {
  try {
       const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',

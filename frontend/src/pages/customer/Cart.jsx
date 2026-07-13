@@ -1,60 +1,98 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import CartItem from '../../components/customer/CartItem';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+import bgImage from '../../assets/cart-bg.png'; 
 
 export default function Cart() {
-  // useState පාවිච්චි කරලා items ටික හදාගන්නවා
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Nike Air Max 270", price: 25000, quantity: 1, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=200&auto=format&fit=crop" },
-    { id: 2, name: "Vans Old Skool", price: 15000, quantity: 2, image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=200&auto=format&fit=crop" }
-  ]);
+  // අපේ අලුත් ගබඩාවෙන් ඇත්තම සපත්තු ටිකයි, මකන function එකයි ගන්නවා
+  const { cartItems, removeFromCart } = useCart();
+  const navigate = useNavigate();
 
-  // Remove කරන function එක
-  const handleRemoveItem = (id) => {
-    const updatedCart = cartItems.filter(item => item.id !== id);
-    setCartItems(updatedCart);
-  };
-
-  const totalAmount = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  // මුළු ගාණ (Total) එකතු කරන විදිහ
+  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
   return (
-    <div className="container" style={{ padding: '2rem 1rem', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#333' }}>Your Cart</h1>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {cartItems.length > 0 ? (
-          cartItems.map((item) => (
-            <CartItem 
-              key={item.id} 
-              item={item} 
-              onRemove={handleRemoveItem} 
-            />
-          ))
-        ) : (
-          <p style={{ textAlign: 'center', fontSize: '1.2rem', color: '#777' }}>Your cart is empty.</p>
-        )}
-      </div>
-
-      {cartItems.length > 0 && (
-        <div style={{ marginTop: '3rem', padding: '2rem', backgroundColor: '#f9f9f9', borderRadius: '10px', textAlign: 'right' }}>
-          <h2 style={{ margin: '0 0 1.5rem 0' }}>Total: <span style={{ color: '#ff6b6b' }}>Rs. {totalAmount.toLocaleString()}</span></h2>
-          
-          <Link to="/checkout">
-            <button style={checkoutBtnStyle}>Proceed to Checkout</button>
-          </Link>
+    <div style={pageStyle}>
+      <div style={containerStyle}>
+        
+        {/* left side have the image*/}
+        <div style={imageSideStyle}>
+          <div style={overlayStyle}>
+            <h1 style={{ fontSize: '3rem', margin: 0, color: '#fff' }}>Your Cart</h1>
+            <p style={{ color: '#ccc', marginTop: '1rem' }}>Review your items before checkout.</p>
+          </div>
         </div>
-      )}
+
+        {/* right side have item list */}
+        <div style={contentSideStyle}>
+          
+          {cartItems.length === 0 ? (
+            // if cart is empty
+            <div style={emptyCartStyle}>
+              <h2 style={{ color: '#888', marginBottom: '2rem' }}>Your cart is empty 😢</h2>
+              <Link to="/shop">
+                <button style={checkoutBtnStyle}>Go to Shop</button>
+              </Link>
+            </div>
+          ) : (
+            // if cart have item show the below
+            <>
+              <div style={itemListStyle}>
+                {cartItems.map((item) => (
+                  <div key={item.id} style={cartItemStyle}>
+                    <img src={item.image} alt={item.name} style={itemImageStyle} />
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', color: '#fff' }}>{item.name}</h3>
+                      <p style={{ margin: 0, color: '#aaa', fontSize: '0.9rem' }}>Size: {item.size} | Qty: {item.quantity}</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ margin: '0 0 0.5rem 0', color: '#ff6b00', fontWeight: 'bold' }}>
+                        Rs. {(item.price * item.quantity).toLocaleString('en-LK')}
+                      </p>
+                      <button onClick={() => removeFromCart(item.id)} style={removeBtnStyle}>
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total and checkout button */}
+              <div style={summaryStyle}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1.2rem', color: '#fff' }}>
+                  <span>Subtotal:</span>
+                  <span style={{ fontWeight: 'bold', color: '#ff6b00' }}>Rs. {subtotal.toLocaleString('en-LK')}</span>
+                </div>
+                <button onClick={() => navigate('/checkout')} style={checkoutBtnStyle}>
+                  Proceed to Checkout
+                </button>
+              </div>
+            </>
+          )}
+
+        </div>
+      </div>
     </div>
   );
 }
 
-const checkoutBtnStyle = {
-  padding: '1rem 2.5rem',
-  fontSize: '1.2rem',
-  fontWeight: 'bold',
-  backgroundColor: '#4CAF50',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer'
-};
+// ----- Styles -----
+const pageStyle = { minHeight: '80vh', backgroundColor: '#111827', padding: '2rem', display: 'flex', justifyContent: 'center', alignItems: 'center' };
+const containerStyle = { display: 'flex', width: '100%', maxWidth: '1100px', backgroundColor: '#1f2937', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', minHeight: '600px' };
+
+// image side
+const imageSideStyle = { flex: 1, backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', display: 'none', '@media (min-width: 768px)': { display: 'block' } };
+const overlayStyle = { position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '2rem' };
+
+// item side
+const contentSideStyle = { flex: 1.5, padding: '3rem', display: 'flex', flexDirection: 'column' };
+const emptyCartStyle = { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' };
+const itemListStyle = { flex: 1, overflowY: 'auto', paddingRight: '1rem', marginBottom: '2rem' };
+
+// appearance of single iteam
+const cartItemStyle = { display: 'flex', alignItems: 'center', gap: '1.5rem', padding: '1rem', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.1)' };
+const itemImageStyle = { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px' };
+const removeBtnStyle = { backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', padding: '0.3rem 0.8rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', transition: '0.2s' };
+
+// part of the bill
+const summaryStyle = { backgroundColor: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px' };
+const checkoutBtnStyle = { width: '100%', backgroundColor: '#ff6b00', color: 'white', border: 'none', padding: '1rem', borderRadius: '8px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', transition: '0.2s' };

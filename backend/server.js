@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const connectDB = require('./config/db'); // 1. Meka aluthen ekathu karanna
-
+const connectDB = require('./config/db'); 
+const productRoutes = require('./routes/productRoutes');
 const app = express();
 
 // 2. Database ekata connect wenna meka call karanna
@@ -11,6 +11,7 @@ connectDB();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/api/products', productRoutes);
 
 // Basic Route eka
 app.get('/', (req, res) => {

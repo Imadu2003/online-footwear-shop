@@ -1,75 +1,85 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductRow from '../../components/admin/ProductRow';
 import AddProductModal from '../../components/admin/AddProductModal';
 
-export default function ManageProducts() {
-  // Initial dummy products list matching the Product Model fields
-  const [products, setProducts] = useState([
-    { _id: '1', name: 'Nike Air Max 270', category: 'Sport', price: 18000.00, stock: 24, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150', description: 'Premium quality footwear from Shoe Store.' },
-    { _id: '2', name: 'Adidas Ultraboost', category: 'Running', price: 22000.00, stock: 15, image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=150', description: 'Premium quality footwear from Shoe Store.' },
-    { _id: '3', name: 'Puma Suede Classic', category: 'Casual', price: 12000.00, stock: 8, image: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=150', description: 'Premium quality footwear from Shoe Store.' },
-    { _id: '4', name: 'Clarks Derby Leather', category: 'Formal', price: 16500.00, stock: 12, image: 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=150', description: 'Premium quality footwear from Shoe Store.' },
-    { _id: '5', name: 'Vans Old Skool', category: 'Casual', price: 9000.00, stock: 0, image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=150', description: 'Premium quality footwear from Shoe Store.' },
-  ]);
 
-  // Form & Search states
+
+export default function ManageProducts() {
+  //the product will be initiated as an empty array and will be populated with the data fetched from the backend
+  const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    category: 'Sport',
-    price: '',
-    stock: '',
-    image: '',
-    description: ''
+    name: '', category: 'Sport', price: '', stock: '', image: '', description: ''
   });
 
-  // Handle inputs inside Add Product Modal Form
+  //when page is loading, fetch the products from the backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        const data = await response.json();
+        setProducts(data); //all the products fetched from the backend will be stored in the products state
+
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setNewProduct((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit handler to save new product
-  const handleAddProductSubmit = (e) => {
+  //if new shoes comes from the form, it will be added to the products state and will be displayed in the table
+  const handleAddProductSubmit = async (e) => {
     e.preventDefault();
     if (!newProduct.name || !newProduct.price || !newProduct.stock || !newProduct.image) return;
 
-    const addedItem = {
-      _id: Date.now().toString(), // Mocking MongoDB _id
+
+    // Send the new product data to the backend
+    const productData = {
       name: newProduct.name,
-      category: newProduct.category,
-      price: parseFloat(newProduct.price),
-      stock: parseInt(newProduct.stock),
+       category: newProduct.category,
+      price: String(newProduct.price),
       image: newProduct.image,
       description: newProduct.description || "Premium quality footwear from Shoe Store."
     };
 
-    setProducts((prev) => [addedItem, ...prev]);
+    try {
+      const response = await fetch('http://localhost:5000/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData) // Send the product data as JSON
+      });
 
-    // Reset Form
-    setNewProduct({
-      name: '',
-      category: 'Sport',
-      price: '',
-      stock: '',
-      image: '',
-      description: ''
-    });
-    setShowAddModal(false);
+      if (response.ok) {
+        const savedProduct = await response.json();
+        setProducts((prev) => [savedProduct, ...prev]); // Add the new product to the top of the list
+
+
+        // Reset the form and close the modal
+
+        setNewProduct({ name: '', category: 'Sport', price: '', stock: '', image: '', description: '' });
+        setShowAddModal(false);
+        alert("Product added successfully!");
+      } else {
+        alert("Failed to add product");
+      }
+    } catch (error) {
+      console.error("Error saving product:", error);
+      alert("Server Error");
+    }
   };
 
-  // Handle Product Deletion
   const handleDeleteProduct = (id) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       setProducts((prev) => prev.filter((p) => p._id !== id));
     }
-  };
-
+  }
   // Filtered Products List
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -158,10 +168,10 @@ export default function ManageProducts() {
           <tbody>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <ProductRow 
-                  key={product._id} 
-                  product={product} 
-                  onDelete={handleDeleteProduct} 
+                <ProductRow
+                  key={product._id}
+                  product={product}
+                  onDelete={handleDeleteProduct}
                 />
               ))
             ) : (
@@ -176,13 +186,13 @@ export default function ManageProducts() {
       </div>
 
       {/* Add Product Modal Overlay Component */}
-      <AddProductModal 
-        showModal={showAddModal} 
-        setShowModal={setShowAddModal} 
-        newProduct={newProduct} 
-        handleFormChange={handleFormChange} 
-        handleAddProductSubmit={handleAddProductSubmit} 
+      <AddProductModal
+        showModal={showAddModal}
+        setShowModal={setShowAddModal}
+        newProduct={newProduct}
+        handleFormChange={handleFormChange}
+        handleAddProductSubmit={handleAddProductSubmit}
       />
     </div>
   );
-}
+}

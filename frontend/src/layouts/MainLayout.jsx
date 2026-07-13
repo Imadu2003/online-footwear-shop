@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/common/Navbar'; // Navbar eka import karaganna
+import Footer from '../components/common/Footer'; // Footer eka import karaganna
 
 export default function MainLayout() {
   return (
@@ -10,9 +11,7 @@ export default function MainLayout() {
         <Outlet /> {/* Me thanin thamai anith pages load wenne */}
       </main>
       
-      <footer style={{ backgroundColor: '#212529', color: 'white', textAlign: 'center', padding: '1rem' }}>
-        © 2026 Shoe Store. All rights reserved.
-      </footer>
+      <Footer/>
     </div>
   );
 }

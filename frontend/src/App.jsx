@@ -19,6 +19,8 @@ import ProductDetails from './pages/customer/ProductDetails';
 import Cart from './pages/customer/Cart';
 import Checkout from './pages/customer/Checkout';
 import About from './pages/customer/About';
+import Contact from './pages/customer/Contact';
+import Review from './pages/customer/Review';
 
 // Admin Pages
 import Dashboard from './pages/admin/Dashboard';
@@ -35,6 +37,8 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/reviews" element={<Review />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/shop/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />

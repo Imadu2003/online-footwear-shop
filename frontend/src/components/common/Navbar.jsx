@@ -29,6 +29,8 @@ export default function Navbar() {
           <Link to="/" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>Home</Link>
           <Link to="/shop" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>Shop</Link>
           <Link to="/about" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>About</Link>
+          <Link to="/contact" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>Contact Us</Link>
+          <Link to="/reviews" style={{ textDecoration: 'none', color: 'var(--color-text-main)', fontWeight: '500' }}>Reviews</Link>
         </div>
 
         {/* Cart සහ Login/Logout Icons */}

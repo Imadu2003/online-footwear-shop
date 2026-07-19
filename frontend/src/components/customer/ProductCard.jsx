@@ -5,13 +5,13 @@ export default function ProductCard({ product }) {
     <div style={cardStyle}>
       {/* සපත්තුවේ රූපය */}
       <div style={{ height: '250px', overflow: 'hidden' }}>
-        <img 
-          src={product.image} 
-          alt={product.name} 
-          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }} 
+        <img
+          src={product.image}
+          alt={product.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }}
         />
       </div>
-      
+
       {/* විස්තර ටික */}
       <div style={{ padding: '1.5rem' }}>
         <span style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', fontWeight: 'bold' }}>
@@ -23,9 +23,12 @@ export default function ProductCard({ product }) {
         <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#ff6b6b', marginBottom: '1rem' }}>
           Rs. {product.price.toLocaleString()}
         </p>
-        
-        <Link to={`/shop/${product.id}`} style={{ textDecoration: 'none' }}>
-          <button style={btnStyle}>
+
+        <Link to={`/shop/${product._id}`} style={{
+          textDecoration: 'none'
+
+        }}>          <button style={btnStyle}>
+
             View Details
           </button>
         </Link>

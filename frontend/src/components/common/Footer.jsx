@@ -11,6 +11,7 @@ export default function Footer() {
                     <ul style={listStyle}>
                         <li><Link to="/about" style={linkStyle}>About Us</Link></li>
                         <li><Link to="/contact" style={linkStyle}>Contact Us</Link></li>
+                        <li><Link to="/reviews" style={linkStyle}>Customer Reviews</Link></li>
                         <li><Link to="/terms" style={linkStyle}>Terms & Conditions</Link></li>
 
 

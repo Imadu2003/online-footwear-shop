@@ -20,13 +20,13 @@ export const AuthProvider = ({ children }) => {
 
   //The actual API for resgistering a new user
   const registerUser = async (name, email, password) => {
- try {
+    try {
       const response = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
       });
- const data = await response.json();
+      const data = await response.json();
       return { success: response.ok, message: data.message };
     } catch (error) {
       return { success: false, message: 'Server error. Is backend running?' };
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
 
   //The actual API for logging in a user
- const login = async (email, password) => {
+  const login = async (email, password) => {
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         setUser(data);
         localStorage.setItem('user', JSON.stringify(data)); // Store user data in localStorage
 
-   return { success: true };
+        return { success: true };
       } else {
         return { success: false, message: data.message };
       }
@@ -57,12 +57,41 @@ export const AuthProvider = ({ children }) => {
   };
 
 
+
+  const updateUserDetails = async (userId, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/profile/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData)
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser(data);
+
+        localStorage.setItem('user', JSON.stringify(data));
+        return { success: true };
+      } else {
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      return { success: false, message: 'Server error' };
+    }
+  };
+
+
+
+
+
+
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
   };
   return (
-    <AuthContext.Provider value={{ user, registerUser, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, registerUser, login, logout, updateUserDetails, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

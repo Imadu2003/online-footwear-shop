@@ -69,7 +69,36 @@ const loginUser = async (req, res) => {
     }
 };
 
+const updateUserProfile = async (req, res) => {
+    try {
+  const userId = req.params.id;  // Get the user ID from the request parameters
+  const { name, phone, address, profileImage } = req.body;  // Get the updated user data from the request body
+
+  // Find the user by ID and update their profile
+
+   const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { name, phone, address, profileImage },
+            { new: true }
+             ).select('-password');   // Exclude the password field from the returned user object
+
+
+            
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(updatedUser); 
+
+
+         } catch (error) {
+        console.error("Profile Update Error:", error);
+        res.status(500).json({ message: 'Server error while updating profile' });
+    }
+};
+
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    updateUserProfile       
 };

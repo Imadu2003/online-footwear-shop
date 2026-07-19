@@ -17,7 +17,21 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'customer' // default role is customer, can be changed to admin manually in the database
-    }
+    },
+    profileImage:{
+                type: String,
+                default: "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+
+    },
+     phone: {
+                type: String,
+                required: true
+     },
+     address: {
+                type: String,
+                default: ""
+     }
+    
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

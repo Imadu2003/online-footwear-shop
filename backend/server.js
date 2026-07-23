@@ -4,6 +4,8 @@ require('dotenv').config();
 const connectDB = require('./config/db'); 
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const app = express();
 
 // 2. Database ekata connect wenna meka call karanna
@@ -14,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Basic Route eka
 app.get('/', (req, res) => {

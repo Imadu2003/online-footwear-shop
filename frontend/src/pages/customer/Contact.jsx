@@ -9,6 +9,8 @@ const Contact = () => {
     message: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,17 +20,39 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate API request
-    if (formData.name && formData.email && formData.message) {
-      setIsSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
+    setErrorMessage('');
+    if (!formData.name || !formData.email || !formData.message) return;
+
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        setErrorMessage(data.message || 'Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error submitting contact form:', err);
+      setErrorMessage('Server connection error. Please check if backend is running.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -451,7 +475,15 @@ const Contact = () => {
                 ></textarea>
               </div>
 
-              <button type="submit" className="submit-btn">Send Message ➔</button>
+              {errorMessage && (
+                <div style={{ color: '#dc2626', backgroundColor: '#fef2f2', border: '1px solid #fecaca', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem' }}>
+                  {errorMessage}
+                </div>
+              )}
+
+              <button type="submit" className="submit-btn" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Message ➔'}
+              </button>
             </form>
           ) : (
             <div className="success-card">

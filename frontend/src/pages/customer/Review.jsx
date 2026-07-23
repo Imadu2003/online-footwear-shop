@@ -1,42 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import shoeHeroBg from '../../assets/shoes.png'; // Hero Background Image
 
 const Review = () => {
-  // Pre-populated initial reviews
-  const [reviews, setReviews] = useState([
-    {
-      id: 1,
-      name: 'Nalinda Rajapaksha',
-      rating: 5,
-      date: '2026-07-10',
-      comment: 'Absolutely love my new running shoes! The cushioning is fantastic and they fit perfectly. Delivery to Kandy was super fast (just 2 days). Highly recommend ShoeStore!',
-      verified: true
-    },
-    {
-      id: 2,
-      name: 'Dilani Perera',
-      rating: 5,
-      date: '2026-07-08',
-      comment: 'Extremely comfortable for daily wear. The build quality feels very premium. Best footwear purchase I have made online in Sri Lanka. Will definitely buy again.',
-      verified: true
-    },
-    {
-      id: 3,
-      name: 'Sahan Gunawardena',
-      rating: 4,
-      date: '2026-07-05',
-      comment: 'Very good designs. The customer support team was very helpful in helping me select the correct size. The shoes look exactly like the pictures.',
-      verified: true
-    },
-    {
-      id: 4,
-      name: 'Fathima Riza',
-      rating: 4,
-      date: '2026-06-28',
-      comment: 'Good value for money. Very comfortable and stylish. Islandwide delivery option is very convenient.',
-      verified: false
-    }
-  ]);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -47,9 +16,58 @@ const Review = () => {
   const [showForm, setShowForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Fetch reviews from Database backend API
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('http://localhost:5000/api/reviews');
+      const data = await res.json();
+      if (res.ok && data.data && data.data.length > 0) {
+        // Map database fields to UI fields
+        const formattedReviews = data.data.map(item => ({
+          id: item._id,
+          name: item.name,
+          rating: item.rating,
+          date: item.createdAt ? new Date(item.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          comment: item.comment,
+          verified: item.verified ?? true
+        }));
+        setReviews(formattedReviews);
+      } else {
+        // Fallback default dummy reviews if database has no reviews yet
+        setReviews([
+          {
+            id: '1',
+            name: 'Nalinda Rajapaksha',
+            rating: 5,
+            date: '2026-07-10',
+            comment: 'Absolutely love my new running shoes! The cushioning is fantastic and they fit perfectly. Delivery to Kandy was super fast (just 2 days). Highly recommend ShoeStore!',
+            verified: true
+          },
+          {
+            id: '2',
+            name: 'Dilani Perera',
+            rating: 5,
+            date: '2026-07-08',
+            comment: 'Extremely comfortable for daily wear. The build quality feels very premium. Best footwear purchase I have made online in Sri Lanka. Will definitely buy again.',
+            verified: true
+          }
+        ]);
+      }
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
   // Calculate rating stats dynamically
   const totalReviews = reviews.length;
-  const averageRating = (reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1);
+  const averageRating = totalReviews > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews).toFixed(1) : '5.0';
 
   const starDistribution = [5, 4, 3, 2, 1].map(stars => {
     const count = reviews.filter(r => r.rating === stars).length;
@@ -57,24 +75,39 @@ const Review = () => {
     return { stars, percentage, count };
   });
 
-  const handleSubmitReview = (e) => {
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     if (!formData.name.trim() || !formData.comment.trim()) return;
 
-    const newReview = {
-      id: Date.now(),
-      name: formData.name,
-      rating: formData.rating,
-      date: new Date().toISOString().split('T')[0],
-      comment: formData.comment,
-      verified: true
-    };
+    setSubmitting(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-    setReviews([newReview, ...reviews]);
-    setFormData({ name: '', rating: 5, comment: '' });
-    setShowForm(false);
-    setSuccessMessage('Thank you! Your review has been successfully posted.');
-    setTimeout(() => setSuccessMessage(''), 5000);
+      const data = await response.json();
+
+      if (response.ok) {
+        setFormData({ name: '', rating: 5, comment: '' });
+        setShowForm(false);
+        setSuccessMessage('Thank you! Your review has been successfully saved to the database.');
+        setTimeout(() => setSuccessMessage(''), 5000);
+        // Refresh reviews list from DB
+        fetchReviews();
+      } else {
+        setErrorMessage(data.message || 'Failed to submit review.');
+      }
+    } catch (err) {
+      console.error('Error submitting review:', err);
+      setErrorMessage('Server connection error. Please check if backend is running.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -604,12 +637,18 @@ const Review = () => {
                 ></textarea>
               </div>
 
+              {errorMessage && (
+                <div style={{ color: '#dc2626', backgroundColor: '#fef2f2', border: '1px solid #fecaca', padding: '10px 15px', borderRadius: '8px', marginBottom: '15px', fontSize: '0.9rem' }}>
+                  {errorMessage}
+                </div>
+              )}
+
               <div className="form-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn-write-review" style={{ borderRadius: '30px' }}>
-                  Submit Review
+                <button type="submit" className="btn-write-review" style={{ borderRadius: '30px' }} disabled={submitting}>
+                  {submitting ? 'Submitting...' : 'Submit Review'}
                 </button>
               </div>
             </form>

@@ -20,7 +20,18 @@ const contactSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+     status: {
+        type: String,
+        default: 'unread' // 'unread', 'read', 'replied'
+    },
+    replyMessage: {
+        type: String,
+        default: ''
+    },
+        createdAt: { type: Date, default: Date.now }
+
 });
 
 module.exports = mongoose.model('Contact', contactSchema);

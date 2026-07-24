@@ -5,8 +5,10 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/admin/Login';
 import CustomerLogin from './pages/customer/CustomerLogin';
-import {CartProvider} from './context/CartContext';
+import { CartProvider } from './context/CartContext';
 import Register from './pages/customer/Register';
+import ManageContacts from './pages/admin/ManageContacts';
+import ManageUsers from './pages/admin/ManageUsers';
 
 // Layouts 
 import MainLayout from './layouts/MainLayout';
@@ -29,36 +31,38 @@ import ManageOrders from './pages/admin/ManageOrders';
 
 function App() {
   return (
-     <AuthProvider>
+    <AuthProvider>
       <CartProvider>
-      <Router>
-        <Routes>
-          {/* Customer Routes */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/reviews" element={<Review />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/shop/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/customer-login" element={<CustomerLogin/>} />
-            <Route path="/register" element={<Register />} />
-          </Route>
-
-           <Route path="/login" element={<Login />} />
-
-           <Route path="/admin" element={<ProtectedRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="products" element={<ManageProducts />} />
-              <Route path="orders" element={<ManageOrders />} />
+        <Router>
+          <Routes>
+            {/* Customer Routes */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/reviews" element={<Review />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:id" element={<ProductDetails />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/customer-login" element={<CustomerLogin />} />
+              <Route path="/register" element={<Register />} />
             </Route>
-          </Route>
 
-        </Routes>
-      </Router>
+            <Route path="/login" element={<Login />} />
+
+            <Route path="/admin" element={<ProtectedRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="products" element={<ManageProducts />} />
+                <Route path="orders" element={<ManageOrders />} />
+                <Route path="contacts" element={<ManageContacts />} />
+                <Route path="users" element={<ManageUsers />} />
+              </Route>
+            </Route>
+
+          </Routes>
+        </Router>
       </CartProvider>
     </AuthProvider>
   );

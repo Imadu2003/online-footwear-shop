@@ -127,6 +127,10 @@ export default function ManageProducts() {
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="All">All Categories</option>
+                        <option value="Men">Men</option>
+            <option value="Ladies">Ladies</option>
+            <option value="Kids">Kids</option>
+
             <option value="Sport">Sport</option>
             <option value="Casual">Casual</option>
             <option value="Running">Running</option>

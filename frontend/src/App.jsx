@@ -8,6 +8,7 @@ import CustomerLogin from './pages/customer/CustomerLogin';
 import { CartProvider } from './context/CartContext';
 import Register from './pages/customer/Register';
 import ManageContacts from './pages/admin/ManageContacts';
+import ManageUsers from './pages/admin/ManageUsers';
 
 // Layouts 
 import MainLayout from './layouts/MainLayout';
@@ -56,7 +57,7 @@ function App() {
                 <Route path="products" element={<ManageProducts />} />
                 <Route path="orders" element={<ManageOrders />} />
                 <Route path="contacts" element={<ManageContacts />} />
-
+                <Route path="users" element={<ManageUsers />} />
               </Route>
             </Route>
 

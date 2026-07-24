@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/contact', contactRoutes);
 app.use('/api/reviews', reviewRoutes);
 

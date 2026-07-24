@@ -7,24 +7,31 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
-  const navigate = useNavigate();
+ const { login, logout } = useAuth();
+   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-
-    const isSuccess = login(email, password);
-    if (isSuccess) {
-      navigate('/admin');
+    const result = await login(email, password);
+    if (result.success) {
+      // after login check that the login user that admin
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser && storedUser.role === 'admin') {
+        navigate('/admin');
+      } else {
+        //  the custemer will try to log admin panel throw out    
+        logout();
+        setError('Access Denied: You do not have Admin privileges.');
+      }
     } else {
-      setError('Invalid email or password');
+      setError(result.message || 'Invalid email or password');
     }
   };
 
   return (
     <div style={pageStyle}>
-      {/* වම් පැත්ත: පින්තූරය */}
+      {/* the left side : picture */}
       <div style={imageSideStyle}>
         <div style={overlayStyle}>
           <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>ShoeStore Admin</h1>
@@ -32,7 +39,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* දකුණු පැත්ත: Login Form එක */}
+      {/* the right side: include the login form*/}
       <div style={formSideStyle}>
         <div style={formContainerStyle}>
           <h2 style={{ fontSize: '2rem', marginBottom: '2rem', color: '#fff' }}>Welcome Back</h2>

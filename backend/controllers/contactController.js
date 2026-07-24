@@ -45,7 +45,28 @@ const getContacts = async (req, res) => {
     }
 };
 
+//admin can reply and status change
+const updateContact = async (req, res) => {
+    try {
+        const { status, replyMessage } = req.body;
+        const contact = await Contact.findById(req.params.id);
+        if (!contact) return res.status(404).json({ message: 'Contact not found' });
+        if (status) contact.status = status;
+        if (replyMessage) {
+            contact.replyMessage = replyMessage;
+            contact.status = 'replied'; //affer reply the status changed to replied
+        }
+        const updatedContact = await contact.save();
+        res.status(200).json({ success: true, data: updatedContact });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+
 module.exports = {
     createContact,
-    getContacts
+    getContacts,
+    updateContact  
 };

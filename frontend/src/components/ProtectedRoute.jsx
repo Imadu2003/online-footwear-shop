@@ -8,6 +8,10 @@ export default function ProtectedRoute() {
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+  //the login user who check that admin or customer if login user is customer to navigate home panel
+  if (user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
 
   // If user is logged in, render the child routes (Outlet)
   return <Outlet />;

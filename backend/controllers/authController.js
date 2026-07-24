@@ -96,9 +96,32 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
+ const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password').sort({ createdAt: -1 });
+        res.status(200).json({ success: true, data: users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+ const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.status(200).json({ success: true, message: 'User deleted' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
 
 module.exports = {
     registerUser,
     loginUser,
-    updateUserProfile       
+    updateUserProfile,
+    getAllUsers,
+    deleteUser       
 };

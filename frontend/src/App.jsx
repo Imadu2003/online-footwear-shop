@@ -9,6 +9,7 @@ import { CartProvider } from './context/CartContext';
 import Register from './pages/customer/Register';
 import ManageContacts from './pages/admin/ManageContacts';
 import ManageUsers from './pages/admin/ManageUsers';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Layouts 
 import MainLayout from './layouts/MainLayout';
@@ -24,6 +25,15 @@ import About from './pages/customer/About';
 import Contact from './pages/customer/Contact';
 import Review from './pages/customer/Review';
 
+// Footer Link Pages
+import TermsAndConditions from './pages/customer/TermsAndConditions';
+import PrivacyPolicy from './pages/customer/PrivacyPolicy';
+import MyOrders from './pages/customer/MyOrders';
+import MyAddresses from './pages/customer/MyAddresses';
+import AccountDetails from './pages/customer/AccountDetails';
+import Wishlist from './pages/customer/Wishlist';
+import LostPassword from './pages/customer/LostPassword';
+
 // Admin Pages
 import Dashboard from './pages/admin/Dashboard';
 import ManageProducts from './pages/admin/ManageProducts';
@@ -34,6 +44,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
           <Routes>
             {/* Customer Routes */}
             <Route element={<MainLayout />}>
@@ -47,6 +58,17 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/customer-login" element={<CustomerLogin />} />
               <Route path="/register" element={<Register />} />
+
+              {/* Footer - Useful Links */}
+              <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+
+              {/* Footer - Customer Care (login-gated in components) */}
+              <Route path="/orders" element={<MyOrders />} />
+              <Route path="/addresses" element={<MyAddresses />} />
+              <Route path="/account" element={<AccountDetails />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/lost-password" element={<LostPassword />} />
             </Route>
 
             <Route path="/login" element={<Login />} />

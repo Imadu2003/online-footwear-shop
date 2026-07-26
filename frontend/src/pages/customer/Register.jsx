@@ -36,7 +36,7 @@ export default function Register() {
     
     if (result.success) {
       alert("Registration Successful! Welcome to ShoeStore.");
-      navigate('/login'); 
+      navigate('/customer-login'); 
     } else {
       setError(result.message || 'Registration failed'); 
     }
@@ -94,8 +94,8 @@ export default function Register() {
             <button type="submit" style={registerBtnStyle}>
               Create My Account
             </button>
-                        <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '1rem', fontSize: '0.95rem' }}>
-              Don't have an account? <Link to="/register" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>Register Here</Link>
+            <p style={{ textAlign: 'center', color: '#9ca3af', marginTop: '1rem', fontSize: '0.95rem' }}>
+              Already have an account? <Link to="/customer-login" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>Login Here</Link>
             </p>
           </form>
         </div>

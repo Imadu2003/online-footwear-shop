@@ -56,4 +56,15 @@ const updateOrderStatus = async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
-module.exports = { addOrderItems, getOrders, updateOrderStatus };
+// Customer's own orders බලන්න
+const getUserOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({ user: req.params.userId }).sort({ createdAt: -1 });
+        res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+module.exports = { addOrderItems, getOrders, updateOrderStatus, getUserOrders };

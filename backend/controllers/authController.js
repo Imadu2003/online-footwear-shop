@@ -117,11 +117,35 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
+// Reset user password by email
+const resetPassword = async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+        if (!email || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Email and new password are required' });
+        }
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'No user account found with this email address' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Password reset successfully! You can now log in with your new password.' });
+    } catch (error) {
+        console.error('Password reset error:', error);
+        res.status(500).json({ success: false, message: 'Server error while resetting password' });
+    }
+};
 
 module.exports = {
     registerUser,
     loginUser,
     updateUserProfile,
     getAllUsers,
-    deleteUser       
+    deleteUser,
+    resetPassword
 };

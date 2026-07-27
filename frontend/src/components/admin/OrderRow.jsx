@@ -1,8 +1,11 @@
-export default function OrderRow({ order, fetchOrders }) {
-  
+import React from 'react';
+
+export default function OrderRow({ order, onStatusChange }) {
+  // Helper to format date
   const formatDate = (isoString) => {
+    if (!isoString) return 'N/A';
     const date = new Date(isoString);
-    return date.toLocaleDateString();
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   const getStatusClass = (status) => {
@@ -16,48 +19,39 @@ export default function OrderRow({ order, fetchOrders }) {
     }
   };
 
-  // Status එක වෙනස් කරාම Database එකේ සේව් වෙනවා
-  const handleStatusChange = async (e) => {
-    const newStatus = e.target.value;
-    try {
-      const res = await fetch(`http://localhost:5000/api/orders/${order._id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) {
-        fetchOrders(); // ආයෙත් අලුත් වෙලා පේන්න Refresh කරනවා
-      } else {
-        alert("Failed to update status");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const customerName = order.customerInfo?.name || order.user?.name || 'Guest Customer';
+  const orderIdDisplay = order._id ? (order._id.length >= 24 ? `ORD-${order._id.slice(-6).toUpperCase()}` : order._id) : 'ORD-NEW';
+  const itemCount = order.orderItems ? order.orderItems.reduce((acc, item) => acc + (item.qty || item.quantity || 1), 0) : 0;
+  const total = order.totalPrice !== undefined ? order.totalPrice : (order.totalAmount || 0);
 
   return (
     <tr>
-      <td style={{ fontWeight: '600', fontSize: '0.85rem', color:'#666' }}>...{order._id.slice(-6)}</td>
-      <td style={{ fontWeight: 'bold' }}>{order.user?.name || 'Unknown User'}</td>
+      <td style={{ fontWeight: '600', color: '#ff6b00' }}>{orderIdDisplay}</td>
+      <td style={{ fontWeight: '500' }}>{customerName}</td>
       <td>{formatDate(order.createdAt)}</td>
-      <td>{order.orderItems.reduce((acc, item) => acc + item.qty, 0)} Items</td>
-      <td style={{ fontWeight: '600', color: '#ff6b00' }}>Rs. {order.totalPrice.toLocaleString('en-LK', { minimumFractionDigits: 2 })}</td>
+      <td>{itemCount} Items</td>
+      <td style={{ fontWeight: '700' }}>Rs. {typeof total === 'number' ? total.toLocaleString('en-LK') : total}</td>
       <td>
-        <span className={`badge ${getStatusClass(order.status)}`}>
-          {order.status}
-        </span>
-      </td>
-      <td style={{ textAlign: 'right' }}>
         <select 
-          value={order.status} 
-          onChange={handleStatusChange}
-          style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #ccc', cursor: 'pointer', outline: 'none', fontWeight: 'bold' }}
+          value={order.status || 'Processing'} 
+          onChange={(e) => onStatusChange && onStatusChange(order._id, e.target.value)}
+          className={`badge ${getStatusClass(order.status)}`}
+          style={{ cursor: 'pointer', border: '1px solid rgba(0,0,0,0.1)', padding: '6px 12px', borderRadius: '20px', fontWeight: '600', outline: 'none' }}
         >
           <option value="Processing">Processing</option>
           <option value="Shipped">Shipped</option>
           <option value="Delivered">Delivered</option>
           <option value="Cancelled">Cancelled</option>
         </select>
+      </td>
+      <td style={{ textAlign: 'right' }}>
+        <button 
+          className="btn-icon-action" 
+          style={{ color: '#0f172a', fontWeight: '600', cursor: 'pointer', background: '#f1f5f9', border: 'none', padding: '6px 14px', borderRadius: '6px' }} 
+          onClick={() => alert(`Order Details:\nID: ${order._id}\nCustomer: ${customerName}\nTotal: Rs. ${total}\nStatus: ${order.status}`)}
+        >
+          View
+        </button>
       </td>
     </tr>
   );

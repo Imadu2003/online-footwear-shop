@@ -86,10 +86,17 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  const logout = () => {
+   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    
+    // පරණ යූසර්ගේ Cart එකත් Local Storage එකෙන් මකලා දානවා
+    localStorage.removeItem('cartItems'); 
+    
+    // ලොගින් පිටුවට යවන ගමන්ම සයිට් එක රීලෝඩ් කරනවා (එතකොට React එකේ මතකයත් අලුත් වෙනවා)
+    window.location.href = '/login'; 
   };
+
   return (
     <AuthContext.Provider value={{ user, registerUser, login, logout, updateUserDetails, loading }}>
       {!loading && children}
